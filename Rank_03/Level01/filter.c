@@ -1,5 +1,6 @@
 // filter:
-// Allowed functions: read, strlen, malloc, calloc, realloc, free, printf, perror
+// Allowed functions: read, strlen, malloc, calloc, realloc, free, printf,
+perror
 // ------------------------------------------------------------------------------
 
 // Write a programm taht will take one and only one argument s.
@@ -28,19 +29,14 @@
 
 #define BUFSIZE 100000
 
-int main(int argc, char **argv)
+	char *
+	read_line(void)
 {
-	char *buf;
-	char *str = argv[1];
-	int read_line = 1;
+	int		read_line;
+	char	*buf;
 
-	if (argc != 2 || argv[1][0] == '\0')
-	{
-		write(2, "Error: 1 Argument Only", 10);
-		return (1);
-	}
 	buf = malloc(BUFSIZE + 1);
-
+	read_line = 1;
 	while (read_line > 0)
 	{
 		read_line = read(0, buf, BUFSIZE);
@@ -48,8 +44,19 @@ int main(int argc, char **argv)
 			write(2, "Error:", 6);
 		buf[read_line] = '\0';
 	}
+	// read(0, buf, BUFSIZE);
+}
 
-	read(0, buf, BUFSIZE);
+int	main(int argc, char **argv)
+{
+	char *str;
+
+	if (argc != 2 || argv[1][0] == '\0')
+	{
+		write(2, "Error: 1 Argument Only", 10);
+		return (1);
+	}
+
 	// while (read(0, &c, 1) > 0)
 	// 	write(1, &c, 1);
 	// printf("%s\n", str);
