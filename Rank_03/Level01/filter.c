@@ -22,9 +22,11 @@
 // If the program is called whitout argument or with an empty argument or with
 // multiples arguments it must return 1.
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #define BUFSIZE 1
 
@@ -88,21 +90,22 @@ char	*ft_strjoin(char *s1, char *s2)
 	char	*tmp = ft_strdup("");
 
 	buf = malloc(BUFSIZE + 1);
+	if (buf == NULL)
+		return (NULL);
 	read_line = 1;
 	while (read_line > 0)
 	{
 		read_line = read(0, buf, BUFSIZE);
 		if (read_line == -1)
 		{	
-			// write(2, "Error:", 6);
 			perror("Error:");
 			return (NULL);
 		}
 		buf[read_line] = '\0';
 
 		str = ft_strjoin(tmp, buf);
+		free(tmp);
 		tmp = str;
-		printf("%s\n", str);
 	}
 	return (str);
 }
@@ -111,17 +114,28 @@ int	main(int argc, char **argv)
 {
 	char *str;
 	char *bug;
+	char *ans;
 	if (argc != 2 || argv[1][0] == '\0')
 	{
 		write(2, "Error: 1 Argument Only", 22);
 		return (1);
 	}
 	str = read_line();
+	if (str == NULL)
+	{
+		write(1, "Error", 5);
+		return (1);
+	}
 	bug = argv[1];
-	
-	printf("return str: %sbug:%s", str, bug);
+	ans = str;
 
-	// while (read(0, &c, 1) > 0)
-	// 	write(1, &c, 1);
+	while ((str = memmem(str, ft_strlen(str), bug, ft_strlen(bug))))
+	{
+		for (int i = 0; i < ft_strlen(bug); i++)
+			str[i] = '*';
+	}
+	
+	printf("%s", ans);
+
 	return (0);
 }
