@@ -179,5 +179,6 @@ int	main(int argc, char **argv)
 	
 	printf("%s", ans);
 
+	free(ans);
 	return (0);
 }
