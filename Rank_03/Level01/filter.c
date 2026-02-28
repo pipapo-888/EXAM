@@ -28,87 +28,129 @@
 #include <unistd.h>
 #include <string.h>
 
-#define BUFSIZE 1
+#define BUFSIZE 10
 
 
+
+// int ft_strlen(char *str)
+// {
+// 	int i = 0;
+
+// 	while(str[i])
+// 		i++;
+// 	return(i);
+// }
+
+// char *ft_strdup(char *str)
+// {
+// 	if (!str)
+// 		return (NULL);
+// 	int len = ft_strlen(str);
+
+// 	char *dest = malloc(sizeof(char) * (len + 1));
+// 	for (int i = 0; i < len; i++)
+// 		dest[i] = str[i];
+// 	dest[len] = '\0';
+// 	return (dest);
+// }
+
+// char	*ft_strjoin(char *s1, char *s2)
+// {
+// 	char	*dest;
+// 	int		i;
+// 	int		j;
+
+// 	if (!s1 || !s2)
+// 		return (NULL);
+// 	dest = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+// 	if (dest == NULL)
+// 		return (NULL);
+// 	i = 0;
+// 	j = 0;
+// 	while (s1[i])
+// 	{
+// 		dest[i] = s1[i];
+// 		i++;
+// 	}
+// 	while (s2[j])
+// 	{
+// 		dest[i + j] = s2[j];
+// 		j++;
+// 	}
+// 	dest[i + j] = '\0';
+// 	return (dest);
+// }
+
+
+// 	char *read_line(void)
+// {
+// 	int		read_line;
+// 	char	*buf;
+// 	char	*str = NULL;
+// 	char	*tmp = ft_strdup("");
+
+// 	buf = malloc(BUFSIZE + 1);
+// 	if (buf == NULL)
+// 		return (NULL);
+// 	read_line = 1;
+// 	while (read_line > 0)
+// 	{
+// 		read_line = read(0, buf, BUFSIZE);
+// 		if (read_line == -1)
+// 		{	
+// 			perror("Error:");
+// 			return (NULL);
+// 		}
+// 		buf[read_line] = '\0';
+
+// 		str = ft_strjoin(tmp, buf);
+// 		free(tmp);
+// 		tmp = str;
+// 	}
+// 	return (str);
+// }
 
 int ft_strlen(char *str)
 {
-	int i = 0;
+	int len = 0;
 
-	while(str[i])
-		i++;
-	return(i);
+	while (str[len])
+		len++;
+	return (len);
 }
 
-char *ft_strdup(char *str)
+char *read_line(void)
 {
-	if (!str)
-		return (NULL);
-	int len = ft_strlen(str);
-
-	char *dest = malloc(sizeof(char) * (len + 1));
-	for (int i = 0; i < len; i++)
-		dest[i] = str[i];
-	dest[len] = '\0';
-	return (dest);
-}
-
-char	*ft_strjoin(char *s1, char *s2)
-{
-	char	*dest;
-	int		i;
-	int		j;
-
-	if (!s1 || !s2)
-		return (NULL);
-	dest = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
-	if (dest == NULL)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (s1[i])
+	char	*str;
+	char	buf[BUFSIZE];
+	size_t	len = 0;
+	int readline = 1;
+	
+	str = malloc(1);
+	str[0] = '\0';
+	while(readline > 0)
 	{
-		dest[i] = s1[i];
-		i++;
-	}
-	while (s2[j])
-	{
-		dest[i + j] = s2[j];
-		j++;
-	}
-	dest[i + j] = '\0';
-	return (dest);
-}
-
-
-	char *read_line(void)
-{
-	int		read_line;
-	char	*buf;
-	char	*str = NULL;
-	char	*tmp = ft_strdup("");
-
-	buf = malloc(BUFSIZE + 1);
-	if (buf == NULL)
-		return (NULL);
-	read_line = 1;
-	while (read_line > 0)
-	{
-		read_line = read(0, buf, BUFSIZE);
-		if (read_line == -1)
+		readline = read(0, buf, BUFSIZE);
+		if (readline == -1)
 		{	
 			perror("Error:");
 			return (NULL);
 		}
-		buf[read_line] = '\0';
-
-		str = ft_strjoin(tmp, buf);
-		free(tmp);
-		tmp = str;
+		char *tmp = realloc(str, len + readline + 1);
+		if (tmp == NULL)
+			return (free(str), NULL);
+		str = tmp;
+		for (int i = 0; i < readline; i++)
+			str[len + i] = buf[i];
+		len += readline;
+		str[len] = '\0';
+		// printf("%s\n", str);
 	}
+
 	return (str);
 }
+
+
 
 int	main(int argc, char **argv)
 {
