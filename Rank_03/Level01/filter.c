@@ -132,10 +132,7 @@ char *read_line(void)
 	{
 		readline = read(0, buf, BUFSIZE);
 		if (readline == -1)
-		{	
-			perror("Error:");
-			return (NULL);
-		}
+			return (perror("Error:"),NULL);		
 		char *tmp = realloc(str, len + readline + 1);
 		if (tmp == NULL)
 			return (free(str), NULL);
@@ -144,9 +141,7 @@ char *read_line(void)
 			str[len + i] = buf[i];
 		len += readline;
 		str[len] = '\0';
-		// printf("%s\n", str);
 	}
-
 	return (str);
 }
 

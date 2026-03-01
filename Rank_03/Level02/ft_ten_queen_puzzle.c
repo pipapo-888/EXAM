@@ -50,14 +50,33 @@ void solve(int board[], int row)
         col++;
     }
 }
-
 void ft_four_queens_puzzle(void)
 {
     int board[4];
     solve(board, 0);
 }
 
-int main()
+void s(int board[], int row, int n)
 {
-	ft_four_queens_puzzle();
+	int col;
+	if (row == n)
+	
+}
+
+void ft_n_queen(int n)
+{
+	int board[n];
+	s(board, 0, n);
+}
+
+int main(int argc, char **argv)
+{
+	if (argc != 2)
+		return (0);
+	int n = atoi(argv[1]);
+
+
+
+	// ft_four_queens_puzzle();
+	
 }
