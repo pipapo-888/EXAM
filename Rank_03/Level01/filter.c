@@ -1,5 +1,5 @@
 // filter:
-// Allowed functions: read, strlen, malloc, calloc, realloc, free, printf, perror
+// Allowed functions: read, strlen, malloc, calloc, realloc, free, printf
 // ------------------------------------------------------------------------------
 
 // Write a programm taht will take one and only one argument s.
@@ -25,155 +25,165 @@
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
+#include <unistd.h>
 
 #define BUFSIZE 10
 
-
-
-// int ft_strlen(char *str)
+// char *read_line(void)
 // {
-// 	int i = 0;
+// 	char	*str;
+// 	char	buf[BUFSIZE];
+// 	size_t	len = 0;
+// 	int readline = 1;
 
-// 	while(str[i])
-// 		i++;
-// 	return(i);
-// }
-
-// char *ft_strdup(char *str)
-// {
-// 	if (!str)
-// 		return (NULL);
-// 	int len = ft_strlen(str);
-
-// 	char *dest = malloc(sizeof(char) * (len + 1));
-// 	for (int i = 0; i < len; i++)
-// 		dest[i] = str[i];
-// 	dest[len] = '\0';
-// 	return (dest);
-// }
-
-// char	*ft_strjoin(char *s1, char *s2)
-// {
-// 	char	*dest;
-// 	int		i;
-// 	int		j;
-
-// 	if (!s1 || !s2)
-// 		return (NULL);
-// 	dest = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
-// 	if (dest == NULL)
-// 		return (NULL);
-// 	i = 0;
-// 	j = 0;
-// 	while (s1[i])
+// 	str = malloc(1);
+// 	str[0] = '\0';
+// 	while(readline > 0)
 // 	{
-// 		dest[i] = s1[i];
-// 		i++;
-// 	}
-// 	while (s2[j])
-// 	{
-// 		dest[i + j] = s2[j];
-// 		j++;
-// 	}
-// 	dest[i + j] = '\0';
-// 	return (dest);
-// }
-
-
-// 	char *read_line(void)
-// {
-// 	int		read_line;
-// 	char	*buf;
-// 	char	*str = NULL;
-// 	char	*tmp = ft_strdup("");
-
-// 	buf = malloc(BUFSIZE + 1);
-// 	if (buf == NULL)
-// 		return (NULL);
-// 	read_line = 1;
-// 	while (read_line > 0)
-// 	{
-// 		read_line = read(0, buf, BUFSIZE);
-// 		if (read_line == -1)
-// 		{	
-// 			perror("Error:");
-// 			return (NULL);
-// 		}
-// 		buf[read_line] = '\0';
-
-// 		str = ft_strjoin(tmp, buf);
-// 		free(tmp);
-// 		tmp = str;
+// 		readline = read(0, buf, BUFSIZE);
+// 		if (readline == -1)
+// 			return (perror("Error:"),NULL);
+// 		char *tmp = realloc(str, len + readline + 1);
+// 		if (tmp == NULL)
+// 			return (free(str), NULL);
+// 		str = tmp;
+// 		for (int i = 0; i < readline; i++)
+// 			str[len + i] = buf[i];
+// 		len += readline;
+// 		str[len] = '\0';
 // 	}
 // 	return (str);
 // }
 
-int ft_strlen(char *str)
-{
-	int len = 0;
+// int	main(int argc, char **argv)
+// {
+// 	char *str;
+// 	char *bug;
+// 	char *ans;
+// 	if (argc != 2 || argv[1][0] == '\0')
+// 	{
+// 		write(2, "Error: 1 Argument Only", 22);
+// 		return (1);
+// 	}
+// 	str = read_line();
+// 	if (str == NULL)
+// 	{
+// 		write(1, "Error", 5);
+// 		return (1);
+// 	}
+// 	bug = argv[1];
+// 	ans = str;
 
-	while (str[len])
-		len++;
-	return (len);
-}
+// 	while ((str = memmem(str, ft_strlen(str), bug, ft_strlen(bug))))
+// 	{
+// 		for (int i = 0; i < ft_strlen(bug); i++)
+// 			str[i] = '*';
+// 	}
 
-char *read_line(void)
+// 	printf("%s", ans);
+
+// 	free(ans);
+// 	return (0);
+// }
+
+char	*read_str(void)
 {
 	char	*str;
-	char	buf[BUFSIZE];
-	size_t	len = 0;
-	int readline = 1;
-	
+	ssize_t	readline_ret;
+	ssize_t	str_len;
+	char	*tmp;
+
 	str = malloc(1);
-	str[0] = '\0';
-	while(readline > 0)
+	str_len = 0;
+	while (1)
 	{
-		readline = read(0, buf, BUFSIZE);
-		if (readline == -1)
-			return (perror("Error:"),NULL);		
-		char *tmp = realloc(str, len + readline + 1);
+		readline_ret = read(0, str + str_len, 1);
+		if (readline_ret == 0)
+			break ;
+		if (readline_ret == -1)
+		{
+			free(str);
+			if (tmp != NULL)
+				free(tmp);
+			perror("Error");
+			return (NULL);
+		}
+		str_len += readline_ret;
+		tmp = realloc(str, str_len + 1);
 		if (tmp == NULL)
-			return (free(str), NULL);
+		{
+			free(str);
+			perror("Error");
+			return (NULL);
+		}
 		str = tmp;
-		for (int i = 0; i < readline; i++)
-			str[len + i] = buf[i];
-		len += readline;
-		str[len] = '\0';
 	}
+	str[str_len] = '\0';
+	// free(tmp);
 	return (str);
 }
 
-
-
 int	main(int argc, char **argv)
 {
-	char *str;
-	char *bug;
-	char *ans;
-	if (argc != 2 || argv[1][0] == '\0')
-	{
-		write(2, "Error: 1 Argument Only", 22);
-		return (1);
-	}
-	str = read_line();
-	if (str == NULL)
-	{
-		write(1, "Error", 5);
-		return (1);
-	}
-	bug = argv[1];
-	ans = str;
+	char	*str;
+	char	*av;
+	char	*ans;
 
-	while ((str = memmem(str, ft_strlen(str), bug, ft_strlen(bug))))
+	if (argc != 2 || argv[1][0] == '\0')
+		return (1);
+	av = argv[1];
+	str = read_str();
+	if (!str)
+		return (1);
+	ans = str;
+	while ((str = memmem(str, strlen(str), av, strlen(av))))
 	{
-		for (int i = 0; i < ft_strlen(bug); i++)
+		for (int i = 0; i < strlen(av); i++)
 			str[i] = '*';
 	}
-	
 	printf("%s", ans);
-
 	free(ans);
 	return (0);
 }
+
+// int main(int ac, char **av)
+// {
+// 	if (ac != 2 || av[1][0] == '\0')
+// 		return (1);
+// 	ssize_t bytes_read = 1, loaded = 0, capacity = BUFSIZ;
+// 	char	*buffer = NULL;
+
+// 	while (1)
+// 	{
+// 		while (capacity <= loaded + BUFSIZ)
+// 		{
+// 			capacity *= 2;
+// 			char *temp = realloc(buffer, capacity + 1);
+// 			if (!temp)
+// 				return (free(buffer), perror("Error"), 1);
+// 			buffer = temp;
+// 		}
+// 		if (bytes_read == 0)
+// 			break ;
+// 		if (bytes_read == -1)
+// 			return (free(buffer), perror("Error"), 1);
+// 		bytes_read = read(0, buffer + loaded, BUFSIZ);
+// 		loaded += bytes_read;
+// 	}
+// 	buffer[loaded] = '\0';
+// 	char *found;
+// 	char *output = buffer;
+// 	char *target = av[1];
+// 	size_t target_len = strlen(target);
+// 	while ((found = memmem(buffer, loaded - (buffer - output), target,
+				target_len)) != NULL)
+// 	{
+// 		for(int i = 0; i < target_len; i++)
+// 			found[i] = '*';
+// 		buffer += target_len + (found - buffer);
+// 	}
+// 	printf("%s", output);
+// 	free(output);
+// 	return (0);
+// }
