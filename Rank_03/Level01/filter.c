@@ -13,8 +13,8 @@
 // will behave the same way as:
 // sed 's/bonjour/*******/g'
 
-// in case of error during read or a malloc you must write "Error: " followed by
-// the error message in stderr and return 1.
+// in case of error during read or a malloc you must write "Error: followed by
+// the error message in stderr and return 1. "
 
 // $> echo 'abcdefgaaaabcdefabc' | ./filter abc | cat -e
 // ***defgaaa***def***
@@ -87,66 +87,6 @@
 // 	return (0);
 // }
 
-char	*read_str(void)
-{
-	char	*str;
-	ssize_t	readline_ret;
-	ssize_t	str_len;
-	char	*tmp;
-
-	str = malloc(1);
-	str_len = 0;
-	while (1)
-	{
-		readline_ret = read(0, str + str_len, 1);
-		if (readline_ret == 0)
-			break ;
-		if (readline_ret == -1)
-		{
-			free(str);
-			if (tmp != NULL)
-				free(tmp);
-			perror("Error");
-			return (NULL);
-		}
-		str_len += readline_ret;
-		tmp = realloc(str, str_len + 1);
-		if (tmp == NULL)
-		{
-			free(str);
-			perror("Error");
-			return (NULL);
-		}
-		str = tmp;
-	}
-	str[str_len] = '\0';
-	// free(tmp);
-	return (str);
-}
-
-int	main(int argc, char **argv)
-{
-	char	*str;
-	char	*av;
-	char	*ans;
-
-	if (argc != 2 || argv[1][0] == '\0')
-		return (1);
-	av = argv[1];
-	str = read_str();
-	if (!str)
-		return (1);
-	ans = str;
-	while ((str = memmem(str, strlen(str), av, strlen(av))))
-	{
-		for (int i = 0; i < strlen(av); i++)
-			str[i] = '*';
-	}
-	printf("%s", ans);
-	free(ans);
-	return (0);
-}
-
 // int main(int ac, char **av)
 // {
 // 	if (ac != 2 || av[1][0] == '\0')
@@ -177,7 +117,7 @@ int	main(int argc, char **argv)
 // 	char *target = av[1];
 // 	size_t target_len = strlen(target);
 // 	while ((found = memmem(buffer, loaded - (buffer - output), target,
-				target_len)) != NULL)
+// target_len)) != NULL)
 // 	{
 // 		for(int i = 0; i < target_len; i++)
 // 			found[i] = '*';
@@ -187,3 +127,123 @@ int	main(int argc, char **argv)
 // 	free(output);
 // 	return (0);
 // }
+
+// char	*read_str(void)
+// {
+// 	char	*str;
+// 	ssize_t	readline_ret;
+// 	ssize_t	str_len;
+// 	char	*tmp;
+
+// 	str = malloc(1);
+// 	str_len = 0;
+// 	while (1)
+// 	{
+// 		readline_ret = read(0, str + str_len, 1);
+// 		if (readline_ret == 0)
+// 			break ;
+// 		if (readline_ret == -1)
+// 		{
+// 			free(str);
+// 			perror("Error");
+// 			return (NULL);
+// 		}
+// 		str_len += readline_ret;
+// 		tmp = realloc(str, str_len + 1);
+// 		if (tmp == NULL)
+// 		{
+// 			free(str);
+// 			perror("Error");
+// 			return (NULL);
+// 		}
+// 		str = tmp;
+// 	}
+// 	str[str_len] = '\0';
+// 	return (str);
+// }
+
+// int	main(int argc, char **argv)
+// {
+// 	char *str;
+// 	char *av;
+// 	char *ans;
+
+// 	if (argc != 2 || argv[1][0] == '\0')
+// 		return (1);
+// 	av = argv[1];
+// 	str = read_str();
+// 	if (!str)
+// 		return (1);
+// 	ans = str;
+// 	while ((str = memmem(str, strlen(str), av, strlen(av))))
+// 	{
+// 		for (int i = 0; i < strlen(av); i++)
+// 			str[i] = '*';
+// 	}
+// 	printf("%s", ans);
+// 	free(ans);
+// 	return (0);
+// }
+
+// あいうえ
+
+// aiue
+
+// aiue
+
+void	*read_str(void)
+{
+	char	*str;
+	int		read_len;
+	ssize_t	modoric;
+	char	*tmp;
+
+	str = NULL;
+	read_len = 0;
+	while (1)
+	{
+		tmp = realloc(str, read_len + BUFSIZE);
+		if (!tmp)
+		{
+			free(str);
+			return (NULL);
+		}
+		str = tmp;
+		modoric = read(0, str + read_len, BUFSIZE);
+		if (modoric == -1)
+			return (NULL);
+		if (modoric == 0)
+			break ;
+		read_len += modoric;
+	}
+	str[read_len] = '\0';
+	return (str);
+}
+
+int	main(int argc, char **argv)
+{
+	if (argc != 2 || argv[1][0] == '\0')
+		return (1);
+	char *str;
+	char *av1;
+	int av1_len;
+	char *ans;
+
+	av1 = argv[1];
+	av1_len = strlen(av1);
+	str = read_str();
+	if (!str)
+	{
+		perror("Error");
+		return (1);
+	}
+	ans = str;
+	while ((str = memmem(str, strlen(str), av1, av1_len)))
+	{
+		for (int i = 0; i < av1_len; i++)
+			str[i] = '*';
+	}
+	printf("%s", ans);
+	free(ans);
+	return (0);
+}
