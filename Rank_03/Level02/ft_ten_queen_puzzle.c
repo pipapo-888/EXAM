@@ -1,4 +1,7 @@
 #include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 
 // void print_solution(int board[4])
 // {
@@ -50,36 +53,69 @@
 //         col++;
 //     }
 // }
-void ft_four_queens_puzzle(void)
+// void ft_four_queens_puzzle(void)
+// {
+//     int board[4];
+//     solve(board, 0);
+// }
+
+// void print_solutions
+
+int	is_safe(int board[], int row, int col)
 {
-    int board[4];
-    solve(board, 0);
+	for (int i = 0; i < row; i++)
+	{
+		if (board[i] == col || (board[i] - i) == (col - row) || (board[i]
+				+ i) == (col + row))
+			return (0);
+	}
+	return (1);
 }
 
-void s(int board[], int row, int n)
+void	print_board(int board[], int n)
 {
-	int col;
+	for (int i = 0; i < n; i++)
+	{
+		printf("%d", board[i]);
+	}
+	printf("\n");
+}
+
+void	s(int board[], int row, int n)
+{
+	int	col;
+
+	col = 0;
 	if (row == n)
 	{
-		print_soliution(board, n)
+		print_board(board, n);
+		return ;
 	}
-	
+	while (col < n)
+	{
+		if (is_safe(board, row, col))
+		{
+			board[row] = col;
+			s(board, row + 1, n);
+		}
+		col++;
+	}
 }
 
-void ft_n_queen(int n)
+void	ft_n_queen(int n)
 {
-	int board[n];
+	int	board[n];
+
 	s(board, 0, n);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
+	int	n;
+
 	if (argc != 2)
 		return (0);
-	int n = atoi(argv[1]);
-
-
-
+	n = atoi(argv[1]);
+	ft_n_queen(n);
 	// ft_four_queens_puzzle();
-	
 }
