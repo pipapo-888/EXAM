@@ -191,11 +191,40 @@
 
 // aiue
 
+// void	*read_str(void)
+// {
+// 	char	*str;
+// 	int		read_len;
+// 	ssize_t	modoric;
+// 	char	*tmp;
+
+// 	str = NULL;
+// 	read_len = 0;
+// 	while (1)
+// 	{
+// 		tmp = realloc(str, read_len + BUFSIZE);
+// 		if (!tmp)
+// 		{
+// 			free(str);
+// 			return (NULL);
+// 		}
+// 		str = tmp;
+// 		modoric = read(0, str + read_len, BUFSIZE);
+// 		if (modoric == -1)
+// 			return (NULL);
+// 		if (modoric == 0)
+// 			break ;
+// 		read_len += modoric;
+// 	}
+// 	str[read_len] = '\0';
+// 	return (str);
+// }
+
 void	*read_str(void)
 {
 	char	*str;
-	int		read_len;
 	ssize_t	modoric;
+	int		read_len;
 	char	*tmp;
 
 	str = NULL;
@@ -204,10 +233,7 @@ void	*read_str(void)
 	{
 		tmp = realloc(str, read_len + BUFSIZE);
 		if (!tmp)
-		{
-			free(str);
 			return (NULL);
-		}
 		str = tmp;
 		modoric = read(0, str + read_len, BUFSIZE);
 		if (modoric == -1)
