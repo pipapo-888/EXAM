@@ -1,7 +1,6 @@
-#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <unistd.h>
 
 // void print_solution(int board[4])
 // {
@@ -85,12 +84,12 @@ void	s(int board[], int row, int n)
 {
 	int	col;
 
-	col = 0;
 	if (row == n)
 	{
 		print_board(board, n);
 		return ;
 	}
+	col = 0;
 	while (col < n)
 	{
 		if (is_safe(board, row, col))
