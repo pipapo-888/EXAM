@@ -220,27 +220,53 @@
 // 	return (str);
 // }
 
-void	*read_str(void)
-{
-	char	*str;
-	ssize_t	modoric;
-	int		read_len;
-	char	*tmp;
+// void	*read_str(void)
+// {
+// 	char	*str;
+// 	ssize_t	modoric;
+// 	int		read_len;
+// 	char	*tmp;
 
-	str = NULL;
-	read_len = 0;
-	while (1)
+// 	str = NULL;
+// 	read_len = 0;
+// 	while (1)
+// 	{
+// 		tmp = realloc(str, read_len + BUFSIZE);
+// 		if (!tmp)
+// 			return (NULL);
+// 		str = tmp;
+// 		modoric = read(0, str + read_len, BUFSIZE);
+// 		if (modoric == -1)
+// 			return (NULL);
+// 		if (modoric == 0)
+// 			break ;
+// 		read_len += modoric;
+// 	}
+// 	str[read_len] = '\0';
+// 	return (str);
+// }
+
+
+
+void *read_str()
+{
+	char *str = NULL;
+	ssize_t modic;
+	int read_len = 0;
+	char *tmp;
+
+	while(1)
 	{
-		tmp = realloc(str, read_len + BUFSIZE);
+		tmp = realloc(str, BUFSIZE + read_len);
 		if (!tmp)
 			return (NULL);
 		str = tmp;
-		modoric = read(0, str + read_len, BUFSIZE);
-		if (modoric == -1)
-			return (NULL);
-		if (modoric == 0)
-			break ;
-		read_len += modoric;
+		modic = read(0, str + read_len, BUFSIZE);
+		if (modic == 0)
+			break;
+		if (modic == -1)
+			return(perror("Error"), NULL);
+		read_len += modic;
 	}
 	str[read_len] = '\0';
 	return (str);
