@@ -248,54 +248,137 @@
 
 
 
-void *read_str()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// void *read_str()
+// {
+// 	char *str = NULL;
+// 	ssize_t modic;
+// 	int read_len = 0;
+// 	char *tmp;
+
+// 	while(1)
+// 	{
+// 		tmp = realloc(str, BUFSIZE + read_len);
+// 		if (!tmp)
+// 			return (NULL);
+// 		str = tmp;
+// 		modic = read(0, str + read_len, BUFSIZE);
+// 		if (modic == 0)
+// 			break;
+// 		if (modic == -1)
+// 			return(perror("Error"), NULL);
+// 		read_len += modic;
+// 	}
+// 	str[read_len] = '\0';
+// 	return (str);
+// }
+
+// int	main(int argc, char **argv)
+// {
+// 	if (argc != 2 || argv[1][0] == '\0')
+// 		return (1);
+// 	char *str;
+// 	char *av1;
+// 	int av1_len;
+// 	char *ans;
+
+// 	av1 = argv[1];
+// 	av1_len = strlen(av1);
+// 	str = read_str();
+// 	if (!str)
+// 	{
+// 		perror("Error");
+// 		return (1);
+// 	}
+// 	ans = str;
+// 	while ((str = memmem(str, strlen(str), av1, av1_len)))
+// 	{
+// 		for (int i = 0; i < av1_len; i++)
+// 			str[i] = '*';
+// 	}
+// 	printf("%s", ans);
+// 	free(ans);
+// 	return (0);
+// }
+
+
+char *read_stddin()
 {
 	char *str = NULL;
-	ssize_t modic;
-	int read_len = 0;
-	char *tmp;
+	int read_line = 0;
+	ssize_t modoric;
 
 	while(1)
 	{
-		tmp = realloc(str, BUFSIZE + read_len);
+		char *tmp = realloc(str, BUFSIZE + read_line);
 		if (!tmp)
 			return (NULL);
 		str = tmp;
-		modic = read(0, str + read_len, BUFSIZE);
-		if (modic == 0)
-			break;
-		if (modic == -1)
-			return(perror("Error"), NULL);
-		read_len += modic;
+		modoric = read(0, str + read_line, BUFSIZE);
+		if (modoric == -1)
+			return(free(str),NULL);
+		if (modoric == 0)
+			break ;
+		read_line += modoric;
 	}
-	str[read_len] = '\0';
+	str[read_line] = '\0';
 	return (str);
 }
 
-int	main(int argc, char **argv)
-{
-	if (argc != 2 || argv[1][0] == '\0')
-		return (1);
-	char *str;
-	char *av1;
-	int av1_len;
-	char *ans;
 
-	av1 = argv[1];
-	av1_len = strlen(av1);
-	str = read_str();
-	if (!str)
+int main(int ac, char **argv)
+{
+	if (ac != 2 || argv[1][0] == '\0')
 	{
-		perror("Error");
+		printf("WRONG\n");
 		return (1);
 	}
-	ans = str;
-	while ((str = memmem(str, strlen(str), av1, av1_len)))
-	{
-		for (int i = 0; i < av1_len; i++)
-			str[i] = '*';
-	}
-	printf("%s", ans);
-	free(ans);
-	return (0);
+	char *str = read_stddin();
+	printf("%s", str);
+
+
 }
