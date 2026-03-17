@@ -119,6 +119,54 @@
 // }
 
 
+// int is_safe(int board[], int row, int col)
+// {
+// 	for (int i = 0; i < row; i++)
+// 	{
+// 		if (board[i] == col || (board[i] - i) == (col - row) || (board[i] + i) == (col + row))
+// 			return (0);
+// 	}
+// 	return (1);
+// }
+
+// void s(int board[], int row, int n)
+// {
+// 	if (row == n)
+// 	{
+// 		for (int i = 0; i < n; i++)
+// 			printf("%d", board[i]);
+// 		printf("\n");
+// 		return ;
+// 	}
+// 	int col = 0;
+// 	while (col < n)
+// 	{
+// 		if (is_safe(board, row, col))
+// 		{
+// 			board[row] = col;
+// 			s(board, row + 1, n);
+// 		}
+// 		col++;
+// 	}
+// }
+
+// void ft_n_queen(int n)
+// {
+// 	int board[n];
+// 	s(board, 0, n);
+// }
+
+// int main(int argc, char **argv)
+// {
+// 	int n;
+
+// 	if (argc != 2 || argv[1][0] == '\0')
+// 		return (1);
+// 	n = atoi(argv[1]);
+// 	ft_n_queen(n);
+
+// }
+
 int is_safe(int board[], int row, int col)
 {
 	for (int i = 0; i < row; i++)
@@ -129,40 +177,43 @@ int is_safe(int board[], int row, int col)
 	return (1);
 }
 
-void s(int board[], int row, int n)
+void dfs(int board[], int row, int n)
 {
 	if (row == n)
 	{
-		for (int i = 0; i < n; i++)
+		for(int i = 0; i < n; i++)
+		{
 			printf("%d", board[i]);
+		}
 		printf("\n");
 		return ;
 	}
-	int col = 0;
-	while (col < n)
+	for (int col = 0; col < n; col++)
 	{
 		if (is_safe(board, row, col))
 		{
 			board[row] = col;
-			s(board, row + 1, n);
+			dfs(board, row + 1, n);
 		}
-		col++;
 	}
 }
 
-void ft_n_queen(int n)
+void ft_nqueen(int n)
 {
 	int board[n];
-	s(board, 0, n);
+	dfs(board, 0, n);
 }
 
-int main(int argc, char **argv)
+
+int main(int ac, char **av)
 {
-	int n;
-
-	if (argc != 2 || argv[1][0] == '\0')
+	if (ac != 2 || av[1][0] == '\0')
 		return (1);
-	n = atoi(argv[1]);
-	ft_n_queen(n);
+	int n = atoi(av[1]);
+	ft_nqueen(n);
 
+
+
+
+	return (0);
 }
