@@ -1,41 +1,56 @@
 #include <stdio.h>
 #include <string.h>
 
-typedef struct s_node
+int is_valid(char *str)
 {
-	int	left;
-	int	right;
-}		t_node;
+	int opened = 0, closed = 0;
 
-t_node	check_str(char *str)
-{
-	ssize_t	len;
-	t_node	size;
-
-	size.left = 0;
-	size.right = 0;
-	len = strlen(str);
-	for (int i = 0; i < len; i++)
+	for (int i = 0; str[i]; i++)
 	{
 		if (str[i] == '(')
-			size.left++;
-		if (str[i] == ')')
-			size.right++;
+			opened++;
+		else if (str[i] == ')')
+		{
+			if (opened > 0)
+				opened--;
+			else
+				closed++;
+		}
 	}
-	return (size);
+	return (opened + closed);
+}
+
+void dfs(char *str, int must_fix, int n_fixed, int pos)
+{
+	if (must_fix == n_fixed && is_valid(str) == 0)
+	{
+		puts(str);
+		return ;
+	}
+	for (int i = pos; str[i]; i++)
+	{
+		if (str[i] == '(' || str[i] == ')')
+		{
+			int c = str[i];
+			str[i] = ' ';
+			dfs(str, must_fix, n_fixed + 1, i);
+			str[i] = c;
+		}
+	}
 }
 
 int	main(int ac, char **argv)
 {
+
 	if (ac != 2)
 	{
-		printf("ac \n");
+		puts("WRONG AC");
 		return (1);
 	}
-	char *str = argv[1];
-	t_node size = check_str(str);
+	int m_fix = is_valid(argv[1]);
+	dfs(argv[1], m_fix, 0, 0);
 
-	printf("%d %d", size.left, size.right);
+	// printf("%d", m_fix);
 
 	return (0);
 }
