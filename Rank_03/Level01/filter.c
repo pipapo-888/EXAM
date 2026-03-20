@@ -1,5 +1,5 @@
 // filter:
-// Allowed functions: read, strlen, malloc, calloc, realloc, free, printf
+// Allowed functions: read, strlen, memmem, realloc, free, printf
 // ------------------------------------------------------------------------------
 
 // Write a programm taht will take one and only one argument s.
@@ -195,7 +195,7 @@
 // {
 // 	char	*str;
 // 	int		read_len;
-// 	ssize_t	modoric;
+// 	ssize_t	modric;
 // 	char	*tmp;
 
 // 	str = NULL;
@@ -209,12 +209,12 @@
 // 			return (NULL);
 // 		}
 // 		str = tmp;
-// 		modoric = read(0, str + read_len, BUFSIZE);
-// 		if (modoric == -1)
+// 		modric = read(0, str + read_len, BUFSIZE);
+// 		if (modric == -1)
 // 			return (NULL);
-// 		if (modoric == 0)
+// 		if (modric == 0)
 // 			break ;
-// 		read_len += modoric;
+// 		read_len += modric;
 // 	}
 // 	str[read_len] = '\0';
 // 	return (str);
@@ -223,7 +223,7 @@
 // void	*read_str(void)
 // {
 // 	char	*str;
-// 	ssize_t	modoric;
+// 	ssize_t	modric;
 // 	int		read_len;
 // 	char	*tmp;
 
@@ -235,63 +235,16 @@
 // 		if (!tmp)
 // 			return (NULL);
 // 		str = tmp;
-// 		modoric = read(0, str + read_len, BUFSIZE);
-// 		if (modoric == -1)
+// 		modric = read(0, str + read_len, BUFSIZE);
+// 		if (modric == -1)
 // 			return (NULL);
-// 		if (modoric == 0)
+// 		if (modric == 0)
 // 			break ;
-// 		read_len += modoric;
+// 		read_len += modric;
 // 	}
 // 	str[read_len] = '\0';
 // 	return (str);
 // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // void *read_str()
 // {
@@ -308,7 +261,7 @@
 // 		str = tmp;
 // 		modic = read(0, str + read_len, BUFSIZE);
 // 		if (modic == 0)
-// 			break;
+// 			break ;
 // 		if (modic == -1)
 // 			return(perror("Error"), NULL);
 // 		read_len += modic;
@@ -345,40 +298,85 @@
 // 	return (0);
 // }
 
+// char *read_stddin()
+// {
+// 	char *str = NULL;
+// 	int read_line = 0;
+// 	ssize_t modric;
 
-char *read_stddin()
+// 	while(1)
+// 	{
+// 		char *tmp = realloc(str, BUFSIZE + read_line);
+// 		if (!tmp)
+// 			return (NULL);
+// 		str = tmp;
+// 		modric = read(0, str + read_line, BUFSIZE);
+// 		if (modric == -1)
+// 			return(free(str),NULL);
+// 		if (modric == 0)
+// 			break ;
+// 		read_line += modric;
+// 	}
+// 	str[read_line] = '\0';
+// 	return (str);
+// }
+
+// int main(int ac, char **argv)
+// {
+// 	if (ac != 2 || argv[1][0] == '\0')
+// 	{
+// 		printf("WRONG\n");
+// 		return (1);
+// 	}
+// 	char *str = read_stddin();
+// 	printf("%s", str);
+
+// }
+
+char	*read_stdin(void)
 {
-	char *str = NULL;
-	int read_line = 0;
-	ssize_t modoric;
+	char	*str;
+	ssize_t	read_line;
+	ssize_t	modric;
+	char	*tmp;
 
-	while(1)
+	str = NULL;
+	read_line = 0;
+	while (1)
 	{
-		char *tmp = realloc(str, BUFSIZE + read_line);
+		tmp = realloc(str, BUFSIZE + read_line);
 		if (!tmp)
-			return (NULL);
+			return (perror("Error"), free(str), NULL);
 		str = tmp;
-		modoric = read(0, str + read_line, BUFSIZE);
-		if (modoric == -1)
-			return(free(str),NULL);
-		if (modoric == 0)
+		modric = read(0, str + read_line, BUFSIZE);
+		if (modric < 0)
+			return (perror("Error"), free(str), NULL);
+		if (modric == 0)
 			break ;
-		read_line += modoric;
+		read_line += modric;
 	}
 	str[read_line] = '\0';
 	return (str);
 }
 
-
-int main(int ac, char **argv)
+int	main(int ac, char **av)
 {
-	if (ac != 2 || argv[1][0] == '\0')
-	{
-		printf("WRONG\n");
+	if (ac != 2 || av[1][0] == '\0')
 		return (1);
+
+	char *str = read_stdin();
+	if (str == NULL)
+		return (1);
+
+	char *ans = str;
+	ssize_t av_len = strlen(av[1]);
+
+	while ((str = memmem(str, strlen(str), av[1], av_len)))
+	{
+		for (int i = 0; i < av_len; i++)
+			str[i] = '*';
 	}
-	char *str = read_stddin();
-	printf("%s", str);
-
-
+	printf("%s", ans);
+	free(ans);
+	return (0);
 }
