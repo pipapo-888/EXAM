@@ -78,7 +78,6 @@ int	main(int ac, char **av)
 	sort_str(av[1]);
 	int len = ft_strlen(av[1]);
 
-	// dfs(av[1], 0);
 	do {
 		puts(av[1]);
 	} while (next_permutation(av[1], len));
