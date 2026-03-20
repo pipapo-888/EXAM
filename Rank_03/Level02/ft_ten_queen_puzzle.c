@@ -233,7 +233,11 @@ void	dfs(int board[], int row, int n)
 	if (row == n)
 	{
 		for (int i = 0; i < row; i++)
+		{
+			if (i != 0)
+				printf(" ");
 			printf("%d", board[i]);
+		}
 		printf("\n");
 		return ;
 	}
