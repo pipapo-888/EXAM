@@ -29,44 +29,48 @@ void	sort_str(char *str)
 			}
 		}
 	}
+	return ;
 }
 
-void	swap(char *a, char *b)
-{
-	char	tmp;
+// void	swap(char *a, char *b)
+// {
+// 	char	tmp;
 
-	tmp = *a;
-	*a = *b;
-	*b = tmp;
-}
+// 	tmp = *a;
+// 	*a = *b;
+// 	*b = tmp;
+// }
 
-void	reverse(char *s, int start, int end)
-{
-	while (start < end)
-	{
-		swap(&s[start], &s[end]);
-		start++;
-		end--;
-	}
-}
+// void	reverse(char *s, int start, int end)
+// {
+// 	while (start < end)
+// 	{
+// 		swap(&s[start], &s[end]);
+// 		start++;
+// 		end--;
+// 	}
+// }
 
-int	next_permutation(char *s, int len)
-{
-	int	i;
-	int	j;
+// int	next_permutation(char *s, int len)
+// {
+// 	int	i;
+// 	int	j;
 
-	i = len - 2;
-	while (i >= 0 && s[i] >= s[i + 1])
-		i--;
-	if (i < 0)
-		return (0);
-	j = len - 1;
-	while (s[j] <= s[i])
-		j--;
-	swap(&s[i], &s[j]);
-	reverse(s, i + 1, len - 1);
-	return (1);
-}
+// 	i = len - 2;
+// 	while (i >= 0 && s[i] >= s[i + 1])
+// 		i--;
+// 	if (i < 0)
+// 		return (0);
+// 	j = len - 1;
+// 	while (s[j] <= s[i])
+// 		j--;
+// 	swap(&s[i], &s[j]);
+// 	reverse(s, i + 1, len - 1);
+// 	return (1);
+// }
+
+
+
 
 int	main(int ac, char **av)
 {
@@ -80,7 +84,12 @@ int	main(int ac, char **av)
 
 	do {
 		puts(av[1]);
-	} while (next_permutation(av[1], len));
+	} while (next_perm(av[1], len));
+
+	// do
+	// {
+	// 	puts(av[1]);
+	// } while (next_permutation(av[1], len));
 
 	return (1);
 }
