@@ -51,21 +51,14 @@ int ft_popen(const char *file, char *const argv[], char type)
 {
 	int fd[2];
 	pipe(fd);
-	printf("%d %d\n", fd[0], fd[1]);
 
 	__pid_t pid;
-
-	// int fd2[2];
-	// pipe(fd2);
-	// printf("%d %d\n", fd2[0], fd2[1]);\
-
+	
 	if (type == 'r')
 	{
 		pid = fork();
-		printf("pid : %d\n", pid);
 		if (pid == 0)
 		{
-			// printf("check\n");
 			dup2(fd[1], STDOUT_FILENO);
 			close(fd[0]);
 			close(fd[1]);
@@ -78,7 +71,6 @@ int ft_popen(const char *file, char *const argv[], char type)
 	if (type == 'w')
 	{
 		pid = fork();
-		printf("pid : %d\n", pid);
 		if (pid == 0)
 		{
 			dup2(fd[0], STDIN_FILENO);
@@ -88,6 +80,7 @@ int ft_popen(const char *file, char *const argv[], char type)
 			exit(-1);
 		}
 		close(fd[0]);
+		return (fd[1]);
 	}
 	return -1;
 }
@@ -100,8 +93,13 @@ int	main() {
 	int len = read(fd, str2, 1000);
 	str2[len] = '\0';
 
-	printf("%s\n", str2);
+	printf("%s", str2);
+
+	
+	char *str3[] = {"grep","ll", NULL};
+	fd = ft_popen("grep", str3, 'w');
+
+	write(fd, "hello\nWorld\n", 12);
+
 	close(fd);
-	// 	while ((line = get_next_line(fd)))
-// 		printf("%s", line);
 }
