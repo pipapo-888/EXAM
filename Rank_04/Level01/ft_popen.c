@@ -42,7 +42,8 @@
 // This exercise is inspired by the libc's popen().
 
 
-
+#include <fcntl.h>
+#include <string.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -85,21 +86,56 @@ int ft_popen(const char *file, char *const argv[], char type)
 	return -1;
 }
 
-int	main() {
-	char *str[] = {"ls", NULL};
-	int	fd = ft_popen("ls", str, 'r');
+// int	main() {
+// 	char *str[] = {"ls", NULL};
+// 	int	fd = ft_popen("ls", str, 'r');
 
-	char str2[1000];
-	int len = read(fd, str2, 1000);
-	str2[len] = '\0';
+// 	char str2[1000];
+// 	int len = read(fd, str2, 1000);
+// 	str2[len] = '\0';
 
-	printf("%s", str2);
+// 	printf("%s", str2);
 
 	
-	char *str3[] = {"grep","ll", NULL};
-	fd = ft_popen("grep", str3, 'w');
+// 	char *str3[] = {"grep","ll", NULL};
+// 	fd = ft_popen("grep", str3, 'w');
 
-	write(fd, "hello\nWorld\n", 12);
+// 	write(fd, "hello\nWorld\n", 12);
 
-	close(fd);
-}
+// 	close(fd);
+// }
+
+
+//test type 'r'
+// int main()
+// {
+// 	//int fd = open("texte", O_RDONLY);
+// 	int fd = ft_popen("ls", (char *const[]){"ls", NULL}, 'r');
+
+// 	char buf[1];
+// 	while(read(fd, buf, 1))
+// 		write(1, buf, 1);
+
+// 	close(fd);
+// 	return (0);
+// }
+
+
+//test type 'w'
+int main()
+{
+    int fd = ft_popen("wc", (char *const[]){"wc", NULL}, 'w');
+	if (fd == -1)
+	{
+		perror("error ft_popen args");
+		return (0);
+	}
+
+    char *input = "Hello world\nThis is a test\nthird line mofo\n";
+    write(fd, input, strlen(input));
+	
+
+    close(fd);
+	printf("after test\n");
+    return (0);
+} 
