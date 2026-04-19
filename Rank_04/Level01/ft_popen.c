@@ -47,18 +47,19 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <sys/wait.h>
+
+static pid_t g_pid = -1;
 
 int ft_popen(const char *file, char *const argv[], char type)
 {
 	int fd[2];
 	pipe(fd);
 
-	__pid_t pid;
-	
 	if (type == 'r')
 	{
-		pid = fork();
-		if (pid == 0)
+		g_pid = fork();
+		if (g_pid == 0)
 		{
 			dup2(fd[1], STDOUT_FILENO);
 			close(fd[0]);
@@ -71,8 +72,8 @@ int ft_popen(const char *file, char *const argv[], char type)
 	}
 	if (type == 'w')
 	{
-		pid = fork();
-		if (pid == 0)
+		g_pid = fork();
+		if (g_pid == 0)
 		{
 			dup2(fd[0], STDIN_FILENO);
 			close(fd[0]);
@@ -128,14 +129,15 @@ int main()
 	if (fd == -1)
 	{
 		perror("error ft_popen args");
-		return (0);
+		return (1);
 	}
 
     char *input = "Hello world\nThis is a test\nthird line mofo\n";
     write(fd, input, strlen(input));
-	
 
+    write(fd, input, strlen(input));
     close(fd);
+    wait(NULL);
 	printf("after test\n");
     return (0);
-} 
+}
