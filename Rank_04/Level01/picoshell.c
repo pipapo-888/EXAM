@@ -55,7 +55,6 @@ int picoshell(char **cmds[])
 	while (cmds[i])
 	{
 		int has_next = (cmds[i + 1] != NULL);
-		printf("%d", has_next);
 		if (has_next)
 			if (pipe(fd) == -1)	return 1;
 
@@ -81,14 +80,14 @@ int picoshell(char **cmds[])
 			close(prev_fd);
 		if (has_next)
 		{
-			close(fd);
+			close(fd[1]);
 			prev_fd = fd[0];
 		}
-		while(wait(NULL))
-			;
-		
-		return (0);
+		i++;
 	}
+	while (wait(NULL) > 0)
+		;
+	return (0);
 }
 
 
@@ -119,3 +118,8 @@ int main(int argc, char **argv)
 	fprintf(stderr, "picoshell returned: %d\n", ret);
 	return ret;
 }
+
+// cc picoshell.c -o picoshell
+// ./picoshell echo hello "|" cat
+// ./picoshell echo squalala "|" cat "|" sed 's/a/b/g'
+// ./picoshell ls "|" grep picoshell
