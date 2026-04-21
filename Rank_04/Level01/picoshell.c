@@ -38,4 +38,84 @@
 // Close all FFS before returning. If the cmds executed successfully wait all
 // child processes and return 0.
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
+int picoshell(char **cmds[])
+{
+	int i = 0;
+	int prev_fd = -1;
+	int fd[2];
+	
+	if (!cmds || !cmds[0])
+		return (0);
+	while (cmds[i])
+	{
+		int has_next = (cmds[i + 1] != NULL);
+		printf("%d", has_next);
+		if (has_next)
+			if (pipe(fd) == -1)	return 1;
+
+		pid_t pid = fork();
+		if (pid < 0) return 1;
+		if (pid == 0)
+		{
+			if (prev_fd != -1)
+			{
+				dup2(prev_fd, 0);
+				close(prev_fd);
+			}
+			if (has_next)
+			{
+				dup2(fd[1], 1);
+				close(fd[0]);
+				close(fd[1]);
+			}
+			execvp(cmds[i][0], cmds[i]);
+			exit(1);
+		}
+		if (prev_fd != -1) 
+			close(prev_fd);
+		if (has_next)
+		{
+			close(fd);
+			prev_fd = fd[0];
+		}
+		while(wait(NULL))
+			;
+		
+		return (0);
+	}
+}
+
+
+int main(int argc, char **argv)
+{
+	char	**cmds[argc + 1];
+	int		ncmds = 0;
+	int		start = 1;
+	int		i;
+
+	for (i = 1; i <= argc; i++)
+	{
+		if (i == argc || strcmp(argv[i], "|") == 0)
+		{
+			int len = i - start;
+			char **cmd = malloc((len + 1) * sizeof(char *));
+			int j;
+			for (j = 0; j < len; j++)
+				cmd[j] = argv[start + j];
+			cmd[len] = NULL;
+			cmds[ncmds++] = cmd;
+			start = i + 1;
+		}
+	}
+	cmds[ncmds] = NULL;
+
+	int ret = picoshell(cmds);
+	fprintf(stderr, "picoshell returned: %d\n", ret);
+	return ret;
+}
