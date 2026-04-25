@@ -40,55 +40,69 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
 
 int picoshell(char **cmds[])
 {
 	int i = 0;
-	int prev_fd = -1;
-	int fd[2];
-	
-	if (!cmds || !cmds[0])
-		return (0);
-	while (cmds[i])
-	{
-		int has_next = (cmds[i + 1] != NULL);
-		if (has_next)
-			if (pipe(fd) == -1)	return 1;
+	int prev_fd = -1
 
-		pid_t pid = fork();
-		if (pid < 0) return 1;
-		if (pid == 0)
-		{
-			if (prev_fd != -1)
-			{
-				dup2(prev_fd, 0);
-				close(prev_fd);
-			}
-			if (has_next)
-			{
-				dup2(fd[1], 1);
-				close(fd[0]);
-				close(fd[1]);
-			}
-			execvp(cmds[i][0], cmds[i]);
-			exit(1);
-		}
-		if (prev_fd != -1) 
-			close(prev_fd);
-		if (has_next)
-		{
-			close(fd[1]);
-			prev_fd = fd[0];
-		}
-		i++;
-	}
-	while (wait(NULL) > 0)
-		;
-	return (0);
+
+
 }
+
+
+
+
+
+// int picoshell(char **cmds[])
+// {
+// 	int i = 0;
+// 	int prev_fd = -1;
+// 	int fd[2];
+	
+// 	if (!cmds || !cmds[0])
+// 		return (0);
+// 	while (cmds[i])
+// 	{
+// 		int has_next = (cmds[i + 1] != NULL);
+// 		if (has_next)
+// 			if (pipe(fd) == -1)	return 1;
+
+// 		pid_t pid = fork();
+// 		if (pid < 0) return 1;
+// 		if (pid == 0)
+// 		{
+// 			if (prev_fd != -1)
+// 			{
+// 				dup2(prev_fd, 0);
+// 				close(prev_fd);
+// 			}
+// 			if (has_next)
+// 			{
+// 				dup2(fd[1], 1);
+// 				close(fd[0]);
+// 				close(fd[1]);
+// 			}
+// 			execvp(cmds[i][0], cmds[i]);
+// 			exit(1);
+// 		}
+// 		if (prev_fd != -1) 
+// 			close(prev_fd);
+// 		if (has_next)
+// 		{
+// 			close(fd[1]);
+// 			prev_fd = fd[0];
+// 		}
+// 		i++;
+// 	}
+// 	while (wait(NULL) > 0)
+// 		;
+// 	return (0);
+// }
+
+
 
 
 int main(int argc, char **argv)
