@@ -51,38 +51,72 @@
 
 static pid_t g_pid = -1;
 
+// int ft_popen(const char *file, char *const argv[], char type)
+// {
+// 	int fd[2];
+// 	pipe(fd);
+
+// 	if (type == 'r')
+// 	{
+// 		g_pid = fork();
+// 		if (g_pid == 0)
+// 		{
+// 			dup2(fd[1], STDOUT_FILENO);
+// 			close(fd[0]);
+// 			close(fd[1]);
+// 			execvp(file, argv);
+// 			exit(-1);
+// 		}
+// 		close(fd[1]);
+// 		return(fd[0]);
+// 	}
+// 	if (type == 'w')
+// 	{
+// 		g_pid = fork();
+// 		if (g_pid == 0)
+// 		{
+// 			dup2(fd[0], STDIN_FILENO);
+// 			close(fd[0]);
+// 			close(fd[1]);
+// 			execvp(file, argv);
+// 			exit(-1);
+// 		}
+// 		close(fd[0]);
+// 		return (fd[1]);
+// 	}
+// 	return -1;
+// }
+
 int ft_popen(const char *file, char *const argv[], char type)
 {
 	int fd[2];
+	
 	pipe(fd);
-
 	if (type == 'r')
 	{
-		g_pid = fork();
-		if (g_pid == 0)
+		if (fork() == 0)
 		{
 			dup2(fd[1], STDOUT_FILENO);
-			close(fd[0]);
 			close(fd[1]);
+			close(fd[0]);
 			execvp(file, argv);
-			exit(-1);
+			exit(1);
 		}
 		close(fd[1]);
-		return(fd[0]);
+		return (fd[0]);
 	}
 	if (type == 'w')
 	{
-		g_pid = fork();
-		if (g_pid == 0)
+		if (fork() == 0)
 		{
 			dup2(fd[0], STDIN_FILENO);
-			close(fd[0]);
 			close(fd[1]);
-			execvp(file, argv);
-			exit(-1);
+			close(fd[0]);
+			execvp(file,argv);
+			exit(1);
 		}
 		close(fd[0]);
-		return (fd[1]);
+		return fd[1];
 	}
 	return -1;
 }
@@ -122,22 +156,23 @@ int ft_popen(const char *file, char *const argv[], char type)
 // }
 
 
+
 //test type 'w'
-int main()
-{
-    int fd = ft_popen("wc", (char *const[]){"wc", NULL}, 'w');
-	if (fd == -1)
-	{
-		perror("error ft_popen args");
-		return (1);
-	}
+// int main()
+// {
+//     int fd = ft_popen("wc", (char *const[]){"wc", NULL}, 'w');
+// 	if (fd == -1)
+// 	{
+// 		perror("error ft_popen args");
+// 		return (1);
+// 	}
 
-    char *input = "Hello world\nThis is a test\nthird line mofo\n";
-    write(fd, input, strlen(input));
+//     char *input = "Hello world\nThis is a test\nthird line mofo\n";
+//     write(fd, input, strlen(input));
 
-    write(fd, input, strlen(input));
-    close(fd);
-    wait(NULL);
-	printf("after test\n");
-    return (0);
-}
+//     write(fd, input, strlen(input));
+//     close(fd);
+//     wait(NULL);
+// 	printf("after test\n");
+//     return (0);
+// }
