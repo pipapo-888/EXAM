@@ -93,8 +93,6 @@ int picoshell(char **cmd[])
 }
 
 
-
-
 // int picoshell(char **cmds[])
 // {
 // 	int i = 0;
@@ -141,38 +139,55 @@ int picoshell(char **cmd[])
 // 	return (0);
 // }
 
+// int main(int argc, char **argv)
+// {
+// 	char	**cmds[argc + 1];
+// 	int		ncmds = 0;
+// 	int		start = 1;
+// 	int		i;
 
+// 	for (i = 1; i <= argc; i++)
+// 	{
+// 		if (i == argc || strcmp(argv[i], "|") == 0)
+// 		{
+// 			int len = i - start;
+// 			char **cmd = malloc((len + 1) * sizeof(char *));
+// 			int j;
+// 			for (j = 0; j < len; j++)
+// 				cmd[j] = argv[start + j];
+// 			cmd[len] = NULL;
+// 			cmds[ncmds++] = cmd;
+// 			start = i + 1;
+// 		}
+// 	}
+// 	cmds[ncmds] = NULL;
 
-
-int main(int argc, char **argv)
-{
-	char	**cmds[argc + 1];
-	int		ncmds = 0;
-	int		start = 1;
-	int		i;
-
-	for (i = 1; i <= argc; i++)
-	{
-		if (i == argc || strcmp(argv[i], "|") == 0)
-		{
-			int len = i - start;
-			char **cmd = malloc((len + 1) * sizeof(char *));
-			int j;
-			for (j = 0; j < len; j++)
-				cmd[j] = argv[start + j];
-			cmd[len] = NULL;
-			cmds[ncmds++] = cmd;
-			start = i + 1;
-		}
-	}
-	cmds[ncmds] = NULL;
-
-	int ret = picoshell(cmds);
-	fprintf(stderr, "picoshell returned: %d\n", ret);
-	return ret;
-}
+// 	int ret = picoshell(cmds);
+// 	fprintf(stderr, "picoshell returned: %d\n", ret);
+// 	return ret;
+// }
 
 // cc picoshell.c -o picoshell
 // ./picoshell echo hello "|" cat
 // ./picoshell echo squalala "|" cat "|" sed 's/a/b/g'
 // ./picoshell ls "|" grep picoshell
+
+// ↓ シンプルテスト用main（examの時はこちらに差し替え）
+int main(void)
+{
+	// ls | wc -l
+	char *cmd0[] = {"ls", NULL};
+	char *cmdGrep[] = {"grep", "pico", NULL};
+	char *cmd1[] = {"wc", "-l", NULL};
+	char **cmds[] = {cmd0, cmdGrep, cmd1, NULL};
+
+	// echo hello | cat | wc -c
+	// char *c0[] = {"echo", "hello", NULL};
+	// char *c1[] = {"cat", NULL};
+	// char *c2[] = {"wc", "-c", NULL};
+	// char **cmds[] = {c0, c1, c2, NULL};
+
+	int ret = picoshell(cmds);
+	fprintf(stderr, "picoshell returned: %d\n", ret);
+	return ret;
+}
