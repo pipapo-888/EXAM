@@ -42,16 +42,55 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <string.h>
 
-int picoshell(char **cmds[])
+
+// ls | wc を実行時 次のcmd wcが存在する為 hasnextがtrueになり出力先がfd[1]に変えられる
+// 子プロセスで実行されたlsを受け取れるように読み込み口をprevfdにfd[0]として保存しておく
+// 次のwcを見ている時には読み取り場所をprevfdに変えて実行今度はnextがないから出力先は変えない
+// 最後に親プロセスのprevfdをcloseして終了
+int picoshell(char **cmd[])
 {
+	int fd[2];
+	int prev_fd = -1;
 	int i = 0;
-	int prev_fd = -1
 
-
-
+	if (!cmd || !cmd[0]) 	//　cmdが入っているか確認
+		return 0;
+	while(cmd[i])
+	{
+		int has_next = cmd[i + 1] != NULL; // パイプが存在しているか確認
+		if (has_next)
+			pipe(fd); // "|" があればpipe
+		if (fork() == 0)
+		{
+			if (prev_fd != -1)
+			{
+				dup2(prev_fd, 0); // dup後は使わなくなったfdを必ずcloseする
+				close(prev_fd);
+			}
+			if (has_next)
+			{
+				dup2(fd[1], 1);
+				close(fd[0]);
+				close(fd[1]);
+			}
+			execvp(cmd[i][0], cmd[i]);
+			exit(1);
+		}
+		if (prev_fd != -1)
+			close(prev_fd);
+		if (has_next)
+		{
+			close(fd[1]);
+			prev_fd = fd[0];
+		}
+		i++;
+	}
+	while(wait(NULL) > 0)
+		;
+	return (0);
 }
-
 
 
 
