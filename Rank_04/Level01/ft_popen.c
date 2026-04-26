@@ -26,8 +26,7 @@
 //     return (0);
 // }
 
-
-// int	main() {
+// int	main(void) {
 // 	int	fd = ft_popen("ls", (char *const []){"ls", NULL}, 'r');
 // 	dup2(fd, 0);
 // 	fd = ft_popen("grep", (char *const []){"grep", "c", NULL}, 'r');
@@ -36,67 +35,29 @@
 // 		printf("%s", line);
 // }
 
-
 // Hints:
 // Do not leak file descriptors!
 // This exercise is inspired by the libc's popen().
 
-
 #include <fcntl.h>
-#include <string.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
-static pid_t g_pid = -1;
-
-// int ft_popen(const char *file, char *const argv[], char type)
-// {
-// 	int fd[2];
-// 	pipe(fd);
-
-// 	if (type == 'r')
-// 	{
-// 		g_pid = fork();
-// 		if (g_pid == 0)
-// 		{
-// 			dup2(fd[1], STDOUT_FILENO);
-// 			close(fd[0]);
-// 			close(fd[1]);
-// 			execvp(file, argv);
-// 			exit(-1);
-// 		}
-// 		close(fd[1]);
-// 		return(fd[0]);
-// 	}
-// 	if (type == 'w')
-// 	{
-// 		g_pid = fork();
-// 		if (g_pid == 0)
-// 		{
-// 			dup2(fd[0], STDIN_FILENO);
-// 			close(fd[0]);
-// 			close(fd[1]);
-// 			execvp(file, argv);
-// 			exit(-1);
-// 		}
-// 		close(fd[0]);
-// 		return (fd[1]);
-// 	}
-// 	return -1;
-// }
-
-int ft_popen(const char *file, char *const argv[], char type)
+int	ft_popen(const char *file, char *const argv[], char type)
 {
-	int fd[2];
-	
+	int	fd[2];
+
 	pipe(fd);
-	if (type == 'r')
+	if (type == 'r') // 親が「読む」モード（子の出力を受け取る）
 	{
 		if (fork() == 0)
 		{
 			dup2(fd[1], STDOUT_FILENO);
+			// 標準出力(1)をパイプの書き込み側に差し替え
+			// → printfやコマンドの出力がパイプに流れる
 			close(fd[1]);
 			close(fd[0]);
 			execvp(file, argv);
@@ -112,16 +73,16 @@ int ft_popen(const char *file, char *const argv[], char type)
 			dup2(fd[0], STDIN_FILENO);
 			close(fd[1]);
 			close(fd[0]);
-			execvp(file,argv);
+			execvp(file, argv);
 			exit(1);
 		}
 		close(fd[0]);
-		return fd[1];
+		return (fd[1]);
 	}
-	return -1;
+	return (-1);
 }
 
-// int	main() {
+// int	main(void) {
 // 	char *str[] = {"ls", NULL};
 // 	int	fd = ft_popen("ls", str, 'r');
 
@@ -131,7 +92,6 @@ int ft_popen(const char *file, char *const argv[], char type)
 
 // 	printf("%s", str2);
 
-	
 // 	char *str3[] = {"grep","ll", NULL};
 // 	fd = ft_popen("grep", str3, 'w');
 
@@ -140,12 +100,11 @@ int ft_popen(const char *file, char *const argv[], char type)
 // 	close(fd);
 // }
 
-
-//test type 'r'
-// int main()
-// {
-// 	//int fd = open("texte", O_RDONLY);
-// 	int fd = ft_popen("ls", (char *const[]){"ls", NULL}, 'r');
+// test type 'r'
+//  int main()
+//  {
+//  	//int fd = open("texte", O_RDONLY);
+//  	int fd = ft_popen("ls", (char *const[]){"ls", NULL}, 'r');
 
 // 	char buf[1];
 // 	while(read(fd, buf, 1))
@@ -155,17 +114,15 @@ int ft_popen(const char *file, char *const argv[], char type)
 // 	return (0);
 // }
 
-
-
-//test type 'w'
-// int main()
-// {
-//     int fd = ft_popen("wc", (char *const[]){"wc", NULL}, 'w');
-// 	if (fd == -1)
-// 	{
-// 		perror("error ft_popen args");
-// 		return (1);
-// 	}
+// test type 'w'
+//  int main()
+//  {
+//      int fd = ft_popen("wc", (char *const[]){"wc", NULL}, 'w');
+//  	if (fd == -1)
+//  	{
+//  		perror("error ft_popen args");
+//  		return (1);
+//  	}
 
 //     char *input = "Hello world\nThis is a test\nthird line mofo\n";
 //     write(fd, input, strlen(input));
