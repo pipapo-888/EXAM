@@ -5,7 +5,7 @@ static char *pos;
 
 void error(char c)
 {
-	if (c == '\0')
+	if (c == '\0') 		
 		printf("Unexpected end of input\n");
 	else 
 		printf("Unexpected token '%c'\n", c);
@@ -14,10 +14,9 @@ void error(char c)
 
 int parse_expr();
 
-int parse_factor()
+static int parse_factor()
 {
 	int val;
-
 	if (*pos == '(')
 	{
 		pos++;
@@ -33,49 +32,131 @@ int parse_factor()
 	}
 	else 
 		error(*pos);
+
 	return (val);
 }
 
-int parse_term()
+static int parse_term()
 {
 	int val;
-
 	val = parse_factor();
 	while (*pos == '*')
 	{
 		pos++;
 		val *= parse_factor();
 	}
-
-	return (val);
+	return val;
 }
 
 int parse_expr()
 {
 	int val;
-
 	val = parse_term();
-	while (*pos == '+')
+	while(*pos == '+')
 	{
 		pos++;
 		val += parse_term();
 	}
-	return (val);	
+	return val;
 }
 
 int main(int ac, char *av[])
 {
 	if (ac != 2)
 		return 1;
-	pos = av[1];	
+	pos = av[1];
 
 	int ans = parse_expr();
+
 	if (*pos != '\0')
 		error(*pos);
-	printf("%d\n", ans);
-
-	return (0);
+	else printf("%d", ans);
+	return 0;	
 }
+
+
+
+
+
+
+
+// #include <stdio.h>
+// #include <stdlib.h>
+// static char *pos;
+
+// void error(char c)
+// {
+// 	if (c == '\0')
+// 		printf("Unexpected end of input\n");
+// 	else 
+// 		printf("Unexpected token '%c'\n", c);
+// 	exit(1);
+// }
+
+// int parse_expr();
+
+// int parse_factor()
+// {
+// 	int val;
+
+// 	if (*pos == '(')
+// 	{
+// 		pos++;
+// 		val = parse_expr();
+// 		if (*pos != ')')
+// 			error(*pos);
+// 		pos++;
+// 	}
+// 	else if (*pos >= '0' && *pos <= '9')
+// 	{
+// 		val = *pos - '0';
+// 		pos++;
+// 	}
+// 	else 
+// 		error(*pos);
+// 	return (val);
+// }
+
+// int parse_term()
+// {
+// 	int val;
+
+// 	val = parse_factor();
+// 	while (*pos == '*')
+// 	{
+// 		pos++;
+// 		val *= parse_factor();
+// 	}
+
+// 	return (val);
+// }
+
+// int parse_expr()
+// {
+// 	int val;
+
+// 	val = parse_term();
+// 	while (*pos == '+')
+// 	{
+// 		pos++;
+// 		val += parse_term();
+// 	}
+// 	return (val);	
+// }
+
+// int main(int ac, char *av[])
+// {
+// 	if (ac != 2)
+// 		return 1;
+// 	pos = av[1];	
+
+// 	int ans = parse_expr();
+// 	if (*pos != '\0')
+// 		error(*pos);
+// 	printf("%d\n", ans);
+
+// 	return (0);
+// }
 
 // static char *pos;
 
