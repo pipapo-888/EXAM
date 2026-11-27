@@ -156,7 +156,7 @@ vect2::~vect2() {}
 
 std::ostream &operator<<(std::ostream &out, const vect2 &obj)
 {
-	out << obj[0] << "," << obj[1];
+	out << obj[0] << ", " << obj[1];
 	return out;
 }
 
