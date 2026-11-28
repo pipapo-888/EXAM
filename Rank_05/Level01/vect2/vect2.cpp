@@ -117,11 +117,11 @@ vect2 &vect2::operator--() {
 vect2::~vect2() {}
 
 std::ostream &operator<<(std::ostream &out, const vect2 &obj) {
-	out << obj[0] << ", " << obj[1];
+	out <<  "{" <<obj[0] << ", " << obj[1] << "}";
 	return out;
 }
 
-vect2 operator*(int n, vect2 &obj) {
+vect2 operator*(int n, const vect2 &obj) {
 	vect2 tmp(obj);
 	tmp *= n;
 	return tmp;

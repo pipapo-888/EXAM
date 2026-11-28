@@ -42,6 +42,6 @@ public:
 };
 
 std::ostream &operator<<(std::ostream &out, const vect2 &obj);
-vect2 operator*(int n, vect2 &obj);
+vect2 operator*(int n, const vect2 &obj);
 
 #endif
